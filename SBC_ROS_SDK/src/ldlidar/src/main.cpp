@@ -5,8 +5,6 @@
 //#include <wiringPi.h>
 //#include <softPwm.h>
 #include "cmd_interface_linux.h"
-#include <ros/ros.h>
-#include <sensor_msgs/LaserScan.h>
 #include "lipkg.h"
 #include "tofbf.h"
 #include "signal.h"
@@ -14,10 +12,6 @@
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "product");
-	ros::NodeHandle nh;                    /* create a ROS Node */
-
-	
 	//int32_t pwm_out = 0;
 	//PIDObjTyp LidarMotorPID(500, 50, 200, 0, 100, 0);
 	//wiringPiSetup();
@@ -42,16 +36,10 @@ int main(int argc, char **argv)
 	if(cmd_port.Open(port_name))
 			std::cout<<"LiDAR_LD19 started successfully "  <<std::endl;
 
-	ros::Publisher lidar_pub = nh.advertise<sensor_msgs::LaserScan>("LiDAR/LD19", 1); /*create a ROS topic */
 	
-	while (ros::ok())
+	while (true)
 	{
-		if (lidar->IsFrameReady())
-		{
-			lidar_pub.publish(lidar->GetLaserScan());  // Fixed Frame:  lidar_frame
-			lidar->ResetFrameReady();
-		}
-
+		sleep(10);
 	}
 	return 0;
 }

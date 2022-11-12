@@ -225,6 +225,7 @@ void LiPkg::ToLaserscan(std::vector<PointData> src)
   angle_increment = ANGLE_TO_RADIAN(mSpeed/2300);
   /*Calculate the number of scanning points*/
   unsigned int beam_size = ceil((angle_max - angle_min) / angle_increment);
+  /*
   output.header.stamp = ros::Time::now();
   output.header.frame_id = "lidar_frame";
   output.angle_min = angle_min;
@@ -234,33 +235,20 @@ void LiPkg::ToLaserscan(std::vector<PointData> src)
   output.angle_increment = angle_increment;
   output.time_increment = 0.0;
   output.scan_time = 0.0;
+  */
   
   /*First fill all the data with Nan*/
+  /*
   output.ranges.assign(beam_size, std::numeric_limits<float>::quiet_NaN());
   output.intensities.assign(beam_size, std::numeric_limits<float>::quiet_NaN());
-
-  for (auto point : src)
+  */
+  
+  for (const auto& point : src)
   {
 	float range = point.distance ;
     float angle = ANGLE_TO_RADIAN(point.angle);
 	
-    int index = (int)((angle - output.angle_min) / output.angle_increment);
-    if (index >= 0 && index < beam_size)
-    {
-      /*If the current content is Nan, it is assigned directly*/
-      if (std::isnan(output.ranges[index]))
-      {
-        output.ranges[index] = range;
-      }   
-      else
-      {/*Otherwise, only when the distance is less than the current value, it can be re assigned*/
-        if (range < output.ranges[index])
-        {
-          output.ranges[index] = range;
-        }
-      }
-      output.intensities[index] = point.confidence;
-    }
+    std::cout << point << std::endl;
   }
 }
 
