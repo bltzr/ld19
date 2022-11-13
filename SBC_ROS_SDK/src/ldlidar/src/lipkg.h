@@ -14,6 +14,8 @@
 #include <vector>
 #include <array>
 #include <iostream>
+#include "lo/lo.h"
+
 
 #define ANGLE_TO_RADIAN(angle) ((angle)*3141.59/180000)
 
@@ -79,7 +81,7 @@ public:
 	long GetErrorTimes(void) { return mErrorTimes; }/*the number of errors in parser process of lidar data frame*/
 	const std::array<PointData, POINT_PER_PACK>& GetPkgData(void);/*original data package*/
 	bool Parse(const uint8_t* data , long len);/*parse single packet*/
-	bool AssemblePacket();/*combine stantard data into data frames and calibrate*/
+	bool AssemblePacket(lo_address osc_target);/*combine stantard data into data frames and calibrate*/
 
 private:
 	uint16_t mTimestamp;
@@ -90,7 +92,7 @@ private:
 	std::vector<PointData> mFrameTmp;
 	bool mIsPkgReady;
 	bool mFrameReady;
-	void ToLaserscan(std::vector<PointData> src);
+	void ToLaserscan(std::vector<PointData> src, lo_address osc_target);
 };
 #endif
 /********************* (C) COPYRIGHT LD Robot *******END OF FILE ********/

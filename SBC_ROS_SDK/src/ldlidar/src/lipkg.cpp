@@ -169,7 +169,7 @@ bool LiPkg::Parse(const uint8_t * data, long len)
 	return true;
 }
 
-bool LiPkg::AssemblePacket()
+bool LiPkg::AssemblePacket(lo_address osc_target)
 {
 	float last_angle = 0;
 	std::vector<PointData> tmp;
@@ -185,7 +185,7 @@ bool LiPkg::AssemblePacket()
 			std::sort(tmp.begin(), tmp.end(), [](PointData a, PointData b) {return a.angle < b.angle; });
 			if(tmp.size()>0)
 			{
-				ToLaserscan(tmp);
+				ToLaserscan(tmp, osc_target);
 				mFrameReady = true;
 				for(auto i=0;i<count;i++)
 				{
@@ -212,7 +212,7 @@ const std::array<PointData, POINT_PER_PACK>& LiPkg::GetPkgData(void)
 	return mOnePkg;
 }
 
-void LiPkg::ToLaserscan(std::vector<PointData> src)
+void LiPkg::ToLaserscan(std::vector<PointData> src, lo_address osc_target)
 {
   float angle_min, angle_max, range_min, range_max, angle_increment;
   
@@ -242,13 +242,16 @@ void LiPkg::ToLaserscan(std::vector<PointData> src)
   output.ranges.assign(beam_size, std::numeric_limits<float>::quiet_NaN());
   output.intensities.assign(beam_size, std::numeric_limits<float>::quiet_NaN());
   */
+ 
   
   for (const auto& point : src)
   {
 	float range = point.distance ;
     float angle = ANGLE_TO_RADIAN(point.angle);
+    
+    lo_send(osc_target, "point", "fii", point.angle, point.distance, point.confidence);
 	
-    std::cout << point << std::endl;
+    //std::cout << point << std::endl;
   }
 }
 
